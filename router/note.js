@@ -27,17 +27,15 @@ router.post('/addNote', (req, res) => {
         textValue: req.body.textValue,
         imgList: srcArr,
         user: result
-    }).then((data) => {
+    }).then(() => {
         return res.send({code: 0, msg: '添加成功'})
-    }).catch(err => {
+    }).catch(() => {
         return res.send({code: 1, msg: '添加出错'})
     })
 });
 // 更新笔记
 router.post('/upDataNote', (req, res) => {
-    if (!req.body.user) {
-        return res.send({code: 1, msg: '添加出错,请检查用户状态'})
-    }
+    //todo:增加用户加验
     let b = urlencode.decode(Buffer.from(req.body.content, 'base64').toString())
     let contnet = b.toString();
     let imgReg = /<img.*?(?:>|\/>)/gi; //匹配图片中的img标签
@@ -59,9 +57,11 @@ router.post('/upDataNote', (req, res) => {
         upDateTime: req.body.upDateTime
     }
     note.findByIdAndUpdate(req.body.noteId, upData, function (err, doc) {
-        if (!err) {
-            return res.send({code: 0, msg: '更新成功'})
+        if (err) {
+            return res.send({code: 1, msg: '更新失败', data: err})
         }
+        console.log(err,doc);
+        return res.send({code: 0, msg: '更新成功'})
     })
 });
 //删除笔记
@@ -82,19 +82,22 @@ router.post('/deleteNote', (req, res) => {
 })
 
 //查询笔记列表
-router.get('/getNoteList', (req, res) => {
+router.get('/getNoteList', async (req, res) => {
     const {pageSize, page} = req.query;
-    Promise.all([
-        new Promise(function (next, err) {
+    await Promise.all([
+        new Promise(function (next, resolve) {
             note.countDocuments({}, function (err, data) {
+                if (err) {
+                    return resolve(err)
+                }
                 if (data) {
-                    next({length: data, totalPage: Math.ceil(data / pageSize)})
+                    return next({length: data, totalPage: Math.ceil(data / pageSize)})
                 }
             })
         }),
-        new Promise((next, err) => {
+        new Promise((next, resolve) => {
             note.find().sort({createTime: -1}).skip((page - 1) * pageSize).limit(Number(pageSize)).then(function (data) {
-                next(data)
+                return next(data)
             })
         })
     ]).then(data => {
@@ -104,13 +107,17 @@ router.get('/getNoteList', (req, res) => {
             code: 0
         })
     }).catch(err => {
-        console.log(err)
+        return res.send({
+            msg: '错误：' + err,
+            code: 1,
+            data: null
+        })
     })
 });
 // 笔记详情
 router.get('/getNoteDetail', (req, res) => {
     note.findOne({_id: req.query.id}).then((data) => {
-        return res.send({code: 0, data: data})
+        return res.send({code: 0, data: data, msg: '查询成功'})
     })
 });
 // 获取我的笔记列表
