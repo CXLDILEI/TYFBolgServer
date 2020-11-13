@@ -56,7 +56,7 @@ router.post('/upDataNote', (req, res) => {
         imgList: srcArr,
         upDateTime: req.body.upDateTime
     }
-    note.findByIdAndUpdate(req.body.noteId, upData, function (err, doc) {
+    note.findByIdAndUpdate(req.body.id, upData, function (err, doc) {
         if (err) {
             return res.send({code: 1, msg: '更新失败', data: err})
         }
