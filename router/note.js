@@ -60,7 +60,6 @@ router.post('/upDataNote', (req, res) => {
         if (err) {
             return res.send({code: 1, msg: '更新失败', data: err})
         }
-        console.log(err,doc);
         return res.send({code: 0, msg: '更新成功'})
     })
 });
