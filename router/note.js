@@ -101,7 +101,6 @@ router.get('/getNoteList', (req, res) => {
         })
     ]).then(data => {
         var data = {list: data[1], total: data[0].length, totalPage: data[0].totalPage};
-        console.log(data);
         return res.send({
             data,
             msg: '请求成功',
