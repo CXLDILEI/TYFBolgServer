@@ -1,6 +1,6 @@
 module.exports ={
     MONGOOSE:{
-        AUTHOR:"test:test123456",
+        AUTHOR:"tyf:test123456",
         DATABASE:"tyf"
     }
 }

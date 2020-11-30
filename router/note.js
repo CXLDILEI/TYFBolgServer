@@ -81,9 +81,9 @@ router.post('/deleteNote', (req, res) => {
 })
 
 //查询笔记列表
-router.get('/getNoteList', async (req, res) => {
+router.get('/getNoteList', (req, res) => {
     const {pageSize, page} = req.query;
-    await Promise.all([
+    Promise.all([
         new Promise(function (next, resolve) {
             note.countDocuments({}, function (err, data) {
                 if (err) {
@@ -100,8 +100,10 @@ router.get('/getNoteList', async (req, res) => {
             })
         })
     ]).then(data => {
+        var data = {list: data[1], total: data[0].length, totalPage: data[0].totalPage};
+        console.log(data);
         return res.send({
-            data: {list: data[1], total: data[0].length, totalPage: data[0].totalPage},
+            data,
             msg: '请求成功',
             code: 0
         })
