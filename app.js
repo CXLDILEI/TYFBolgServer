@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const JwtUtil = require('./jwt/jwt');
 const bodyParser = require('body-parser');
 const config = require('./assets/config')
+var history = require('connect-history-api-fallback');
 
 mongoose.set('useFindAndModify', false)
 //连接数据库
@@ -36,8 +37,8 @@ new Promise(function (reslove, reject) {
 }).catch(err => {
     console.log(err)
 })
+app.use(history());
 //获取post请求
-
 app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*'); //这个表示任意域名都可以访问，这样写不能携带cookie了。
     res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , X-token,token');
