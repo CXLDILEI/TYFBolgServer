@@ -24,6 +24,7 @@ new Promise(function (reslove, reject) {
 }).then((data) => {
     console.log(data)
 }, (err) => {
+    console.log(err);
     mongoose.connect(`mongodb://localhost/${config.MONGOOSE.DATABASE}`, {
         useNewUrlParser: true,
         useUnifiedTopology: true
@@ -31,7 +32,7 @@ new Promise(function (reslove, reject) {
         if (!error) {
             console.log('数据库链接成功--无账号密码')
         } else {
-            console.log('数据库链接失败', err)
+            console.log('数据库链接失败', error)
         }
     });
 }).catch(err => {
