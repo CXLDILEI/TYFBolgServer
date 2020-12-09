@@ -60,6 +60,7 @@ router.post('/login', (req, res) => {
 // 根据用户id查用户信息
 router.get('/getUserById', function (req, res) {
     let userId = utils.getUserId(req.headers.token);
+    console.log(userId);
     user.findOne({_id: userId}, {password: 0}, function (err, data) {
         if (!err) {
             return res.send({code: 0, data: data, msg: '查询成功'})
